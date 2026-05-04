@@ -1,0 +1,56 @@
+name: Test Slack webhook
+
+# Smoke test voor de Slack-kant van sprint-retro.yml.
+# Post een hardcoded Block Kit bericht naar SLACK_WEBHOOK_RETRO zodat je
+# kunt valideren dat de webhook werkt en het bericht goed rendert,
+# zonder Anthropic API of GitHub project-toegang nodig te hebben.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  post:
+    name: Post test bericht naar Slack
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Post Block Kit smoke test
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_RETRO }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "::error::SLACK_WEBHOOK_RETRO secret is niet gezet in repo settings"
+            exit 1
+          fi
+          curl -sS -X POST \
+            -H 'Content-Type: application/json' \
+            --fail-with-body \
+            --data '{
+              "text": "Sprint retro — webhook smoke test",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": { "type": "plain_text", "text": "Sprint retro — webhook smoke test" }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Als je dit bericht ziet werkt de webhook + Block Kit rendering. Dit is *geen* echte retro — alleen een test van de Slack-kant van `sprint-retro.yml`."
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "Run: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_id }}> · trigger: ${{ github.event_name }}"
+                    }
+                  ]
+                }
+              ]
+            }' \
+            "$SLACK_WEBHOOK_URL"

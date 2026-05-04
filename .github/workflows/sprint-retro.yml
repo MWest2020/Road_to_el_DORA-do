@@ -1,0 +1,103 @@
+name: Sprint retro & review
+
+on:
+  schedule:
+    # Elke vrijdag 07:00 UTC = 09:00 Europe/Amsterdam (zomertijd 08:00 UTC)
+    # We pakken 07:00 UTC zodat het in beide het in beide TZ's vóór 09:00 lokaal is
+    - cron: '0 7 * * 5'
+  workflow_dispatch:
+    # Handmatig triggerbaar voor testen / ad-hoc runs
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sprint-retro
+  cancel-in-progress: false
+
+jobs:
+  analyze:
+    name: Analyseer sprint en post naar Slack
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Run sprint analyse
+        env:
+          # Org-scoped PAT met read:project + repo scope, of een GitHub App token
+          GH_TOKEN: ${{ secrets.SPRINT_ANALYSIS_GH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          mkdir -p tmp
+          claude \
+            --print \
+            --permission-mode acceptEdits \
+            --allowed-tools "Bash,Read,Write,Edit" \
+            < .github/prompts/sprint-retro.md
+
+      - name: Valideer output
+        run: |
+          if [ ! -f slack-payload.json ]; then
+            echo "::error::slack-payload.json is niet aangemaakt"
+            exit 1
+          fi
+          # Basis JSON-validatie
+          python -c "import json; json.load(open('slack-payload.json'))"
+          echo "Payload geldig, $(wc -c < slack-payload.json) bytes"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sprint-retro-${{ github.run_id }}
+          path: |
+            slack-payload.json
+            report.md
+            tmp/raw-data.json
+          retention-days: 90
+
+      - name: Post naar Slack
+        if: success()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_RETRO }}
+        run: |
+          curl -sS -X POST \
+            -H 'Content-Type: application/json' \
+            --data @slack-payload.json \
+            --fail-with-body \
+            "$SLACK_WEBHOOK_URL"
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_RETRO }}
+        run: |
+          curl -sS -X POST \
+            -H 'Content-Type: application/json' \
+            --data '{
+              "text": ":warning: Sprint retro analyse gefaald",
+              "blocks": [{
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Sprint retro workflow gefaald* — run <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_id }}>"
+                }
+              }]
+            }' \
+            "$SLACK_WEBHOOK_URL"

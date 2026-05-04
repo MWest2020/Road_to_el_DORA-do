@@ -1,0 +1,64 @@
+# Changelog
+
+All notable changes to this repo are tracked here.
+
+## 2026-05-04
+
+### Added
+- Sprint retro & review automation kit (delivered as `~/Downloads/road2.zip`,
+  placed unmodified at the layout the kit's own README specifies):
+  - `.github/workflows/sprint-retro.yml` — weekly Friday workflow that runs
+    the analysis and posts to Slack.
+  - `.github/prompts/sprint-retro.md` — Claude Code prompt that drives the
+    analysis (renamed from the zip's `sprint-retro-prompt.md` to match the
+    path documented in the kit README).
+  - `README.md` — setup, secrets, audit-trail documentation. Replaces the
+    original placeholder README.
+- `.gitignore` covering secrets (`.env*`, `*.pem`, `*.key`), local
+  Python/Node artefacts, and local workflow outputs (`tmp/`,
+  `slack-payload.json`, `report.md`).
+- `CHANGELOG.md` (this file).
+- `.github/workflows/test-slack.yml` — `workflow_dispatch`-only smoke
+  test that posts a hardcoded Block Kit message to
+  `SLACK_WEBHOOK_RETRO`. Lets you validate the Slack side of the kit
+  without needing Anthropic API access or GitHub project access. Not
+  part of the original kit; added for staged testing on this personal
+  repo.
+- `.env.example` documenting the env vars needed for local prompt runs
+  (`GH_TOKEN`, `ANTHROPIC_API_KEY`, `SLACK_WEBHOOK_URL`). Note: in CI
+  these come from repo secrets, not from a committed file.
+
+### Open review notes — discuss with team before promoting to ConductionNL org
+
+These were spotted during a quick read of the kit. Nothing was changed in
+the kit content itself; this list is for the team conversation.
+
+1. **`fix:` overcounts in CFR and tech-debt heuristics.**
+   The prompt's change-failure-rate (§4) and tech-debt-signals (§5) regex
+   on `fix:`, but `fix:` is a Conventional Commits prefix that matches
+   almost every PR/commit. CFR especially gets inflated.
+   Options: limit to `revert` + `hotfix` only, or restrict `fix:` matches
+   to commits/PRs landing ≤48h after a merge that touches the same files
+   (the prompt mentions this constraint loosely for CFR but not for
+   tech-debt).
+
+2. **DST comment in `sprint-retro.yml` cron is reversed.**
+   Comment claims `07:00 UTC = 09:00 Europe/Amsterdam (zomertijd 08:00 UTC)`.
+   Actually: in zomertijd (CEST, UTC+2), `07:00 UTC = 09:00 Amsterdam`; in
+   wintertijd (CET, UTC+1), `07:00 UTC = 08:00`. Comment also has a
+   doubled phrase ("het in beide het in beide").
+
+3. **No anti-username guard before the Slack POST.**
+   The kit's design forbids author names / @-mentions in output, but no
+   step grep-checks `slack-payload.json` for `@` before posting. A
+   defensive grep step would make the policy enforceable rather than
+   aspirational.
+
+4. **Failure notification uses the same Slack webhook** as the success
+   post. If the webhook itself breaks, both paths fail silently.
+   Acceptable for V1; worth knowing.
+
+### Not changed
+The kit's content is intentionally left as-delivered so the team can
+evaluate the original artefact. If they want any of the above fixed
+before adoption, that becomes a separate, reviewable change.
