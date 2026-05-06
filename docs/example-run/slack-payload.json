@@ -1,0 +1,98 @@
+{
+  "text": "Sprint retro — Kanban sprint 1 (mid-sprint, met DORA benchmarks)",
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "Sprint retro — Kanban sprint 1 (mid-sprint)"
+      }
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "Sprint window: 2026-04-28 → 2026-05-11 · gegenereerd 2026-05-05T06:27Z · *mid-sprint stand* (dag 6 van 14)"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Flow metrics — met industry benchmark*\n• *Lead time (PR open→merge)*: mediaan *0.2h*  →  *Elite* tier (< 1h) _(DORA proxy — strikt = commit→live)_\n• *PR onder 24u*: *86.6%*  (97 PRs)  _(geen DORA-metric; LinearB/GitClear benchmark: high-performers >70%)_\n• *Deploy frequency*: *39 releases / 6d = 6.5/day*  →  *Elite* tier (>= 1/day) _(proxy: GitHub releases ≈ deploys)_\n• *Change failure rate*: n/a deze run (DORA-tier vereist revert/hotfix-correlatie)\n• *MTTR*: n/a deze run"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Cycle time issues* (created → closed, 21 issues)\n• mediaan: *10.3d*  ·  P90: *15.8d*\n_Geen formele DORA-tier; Atlassian/agile-literatuur: 3-7d = gezond, >10d = vaak signaal voor grote scope of intake-friction._\n```\n     <1d   0\n    1-2d   0\n    2-4d   0\n    4-7d   0\n   7-14d  ████████████████████ 17\n    >14d  █████ 4\n```"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Sprint stickers (team)*\n• Smooth issues (≤3d, <2 comments): *0*\n• Issues geopend deze sprint: *0* — alle gesloten werk was carry-over"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Retro signals*\n\n*Lange threads (>10 comments):*\n• <https://github.com/ConductionNL/woo-website-template-apiv2/issues/126|#126> (woo-website-template-apiv2) — 15 comments\n\n*Friction-taal scan:* n/a deze run\n\n*Sprint-spillover detectie:* n/a deze run"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Deploys per repo*\n• openregister: 21\n• opencatalogi: 16\n• docudesk: 2"
+      }
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "*Headline:* PR-pipeline scoort *Elite*, deploy-frequentie *Elite*. Issue cycle time (10.3d mediaan) suggereert dat de bottleneck *vóór* de PR ligt — intake, scope, of grooming."
+        }
+      ]
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "Benchmarks: <https://dora.dev/research/2023/dora-report/|DORA 2023 State of DevOps Report> · <https://github.com/orgs/ConductionNL/projects/4|Project board>"
+        }
+      ]
+    },
+    {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "Open project board"
+          },
+          "url": "https://github.com/orgs/ConductionNL/projects/4"
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "DORA report"
+          },
+          "url": "https://dora.dev/research/2023/dora-report/"
+        }
+      ]
+    }
+  ]
+}

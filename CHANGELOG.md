@@ -2,6 +2,40 @@
 
 All notable changes to this repo are tracked here.
 
+## 2026-05-06
+
+### Added
+- `docs/example-run/` — frozen demo artefacts from a manual run on
+  2026-05-04 against the live `ConductionNL/projects/4` board
+  (mid-sprint, day 6 of 14):
+  - `report.md` — Markdown report posted nowhere automatically; for
+    team to read alongside the Slack message.
+  - `slack-payload.json` — exact Block Kit payload as posted.
+  - `README.md` — frames the artefact as mid-sprint, demo, and lists
+    what was deliberately skipped vs the kit spec.
+
+### Done in this session (no code change, kept for audit)
+- Smoke-tested `test-slack.yml` via `workflow_dispatch` against the
+  retro Slack channel — webhook + Block Kit rendering verified.
+- Authorised `gh` CLI with `read:project,project` scopes and pulled
+  real Project 4 data (39 items in active Kanban sprint 1, 11 repos).
+- Computed and posted V2 sprint-retro output to Slack including DORA
+  tier labels (Lead time → Elite proxy, Deploy freq → Elite proxy)
+  with explicit "proxy not strict DORA" caveats and a link to the
+  DORA 2023 State of DevOps report.
+- Headline insight surfaced: PR/release pipeline scores Elite on
+  proxies, but issue cycle time is 10.3d median with 0 issues opened
+  *and* closed in the same sprint — bottleneck likely upstream of
+  PR (intake / scope / grooming).
+
+### Notes for the team conversation
+- The demo run was generated from this *personal* repo using the
+  user's own `gh` token. Any further regular runs (cron) should
+  move to `ConductionNL/team-ops` (or `.github`) with a GitHub App
+  token at org level.
+- The Slack incoming-webhook URL was visible during the session and
+  should be rotated before the channel is used in production.
+
 ## 2026-05-04
 
 ### Added
