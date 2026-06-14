@@ -1,12 +1,11 @@
 name: Sprint retro & review
 
+# SUPERSEDED (2026-06-14): replaced by gitsweeper (`gitsweeper deliver`).
+# The weekly schedule has been removed so this no longer posts to Slack.
+# Kept dispatch-only for historical reference; the repo is archived.
 on:
-  schedule:
-    # Elke vrijdag 07:00 UTC = 09:00 Europe/Amsterdam (zomertijd 08:00 UTC)
-    # We pakken 07:00 UTC zodat het in beide het in beide TZ's vóór 09:00 lokaal is
-    - cron: '0 7 * * 5'
   workflow_dispatch:
-    # Handmatig triggerbaar voor testen / ad-hoc runs
+    # Handmatig triggerbaar — alleen voor historische referentie
 
 permissions:
   contents: read

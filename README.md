@@ -1,3 +1,11 @@
+> **⚠️ Superseded — gearchiveerd (2026-06-14).** Deze tool is opgegaan in
+> **[gitsweeper](https://github.com/MWest2020/Gitsweeper)**, dat de DORA-metrics
+> én de retro-signalen nu forge-agnostisch (GitHub + Forgejo/Codeberg + GitLab)
+> levert: `gitsweeper dora`, `gitsweeper retro` en `gitsweeper deliver`
+> (DORA + retro → Slack Block Kit). De wekelijkse Actions-workflow hieronder is
+> uitgezet. Deze repo blijft staan voor de historie/audit. Voor nieuw werk: zie
+> gitsweeper.
+
 # Sprint retro & review automatisering
 
 Wekelijkse geautomatiseerde retrospective-data voor het Conduction dev team,
